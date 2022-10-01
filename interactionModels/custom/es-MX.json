@@ -1,0 +1,111 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "datos curiosos",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "DatoCuriosoAleatorioIntent",
+          "slots": [],
+          "samples": [
+            "di un dato",
+            "dato curioso",
+            "di un dato curioso",
+            "dime un dato",
+            "dime un dato curioso"
+          ]
+        },
+        {
+          "name": "DatoCuriosoIntent",
+          "slots": [
+            {
+              "name": "tipo",
+              "type": "TipoSlot",
+              "samples": [
+                "sobre {tipo}",
+                "Dato curioso sobre {tipo}",
+                "Dato sobre {tipo}"
+              ]
+            }
+          ],
+          "samples": [
+            "dime un dato curioso sobre un tema",
+            "di un dato curioso de {tipo}",
+            "di un dato de {tipo}",
+            "dime un dato de {tipo}",
+            "dame un dato sobre {tipo}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "naturaleza"
+              }
+            },
+            {
+              "name": {
+                "value": "arte"
+              }
+            }
+          ],
+          "name": "TipoSlot"
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "DatoCuriosoIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "tipo",
+              "type": "TipoSlot",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.798522891635.654592526600"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.798522891635.654592526600",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Dime el tema del dato curioso"
+          },
+          {
+            "type": "PlainText",
+            "value": "Me podrías decir el tema del dato curioso por favor"
+          }
+        ]
+      }
+    ]
+  },
+  "version": "4"
+}
