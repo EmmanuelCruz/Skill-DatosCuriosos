@@ -50,6 +50,13 @@
             "dime un dato de {tipo}",
             "dame un dato sobre {tipo}"
           ]
+        },
+        {
+          "name": "DatoSusurradoIntent",
+          "slots": [],
+          "samples": [
+            "Dime dato susurrando"
+          ]
         }
       ],
       "types": [
@@ -107,5 +114,5 @@
       }
     ]
   },
-  "version": "4"
+  "version": "5"
 }

@@ -11,7 +11,9 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Bienvenido, puedes decir, dame un dato curioso';
+        const speakOutput = `Bienvenido, puedes decir, dame un dato curioso.`;
+        
+        console.log("Se ejecutó la linea de bienvenida correctamente");
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -44,6 +46,8 @@ const DatoCuriosoAleatorioIntentHandler = {
         const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
         
         const speakOutput = datosCuriosos[indiceAleatorio].dato;
+        
+        console.log("Se dio un dato curioso aleatorio correctamente");
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -69,12 +73,31 @@ const DatoCuriosoIntentHandler = {
             }
         });
         
+        console.log("Se dio un dato curioso de una categoría correctamente");
+        
         const indiceAleatorio = Math.floor(Math.random() * seccion.length);
         speakOutput += seccion[indiceAleatorio].dato;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt()
+            .getResponse();
+    }
+};
+
+const DatoSusurradoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'DatoSusurradoIntent';
+    },
+    handle(handlerInput) {
+        const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
+        
+        const speakOutput = `<amazon:effect name="whispered">${datosCuriosos[indiceAleatorio].dato}</amazon:effect>`;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
 };
@@ -191,6 +214,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         DatoCuriosoAleatorioIntentHandler,
         DatoCuriosoIntentHandler,
+        DatoSusurradoIntentHandler,
         // HelloWorldIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
