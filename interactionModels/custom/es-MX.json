@@ -57,6 +57,13 @@
           "samples": [
             "Dime dato susurrando"
           ]
+        },
+        {
+          "name": "DatoCuriosoAudioIntent",
+          "slots": [],
+          "samples": [
+            "dime un dato curioso con música"
+          ]
         }
       ],
       "types": [
@@ -114,5 +121,5 @@
       }
     ]
   },
-  "version": "5"
+  "version": "7"
 }

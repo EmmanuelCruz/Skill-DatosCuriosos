@@ -5,7 +5,7 @@
 
 ### Descripción
 
-Implementación de una Skill de Alexa para decir datos curiosos aleatorios o datos curiosos de alguna categoría específica (Arte, Naturaleza). En esta versión de la skill se incluye SSML.
+Implementación de una Skill de Alexa para decir datos curiosos aleatorios o datos curiosos de alguna categoría específica (Arte, Naturaleza). En esta versión de la skill se incluye SSML. Además se incluye APLA.
 
 La palabra de invocación de la skill:
 

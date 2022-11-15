@@ -11,7 +11,7 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = `Bienvenido, puedes decir, dame un dato curioso.`;
+        const speakOutput = `Bienvenido, puedes decir, dame un dato curioso. <audio src="soundbank://soundlibrary/animals/amzn_sfx_cat_angry_screech_1x_01" />`;
         
         console.log("Se ejecutó la linea de bienvenida correctamente");
 
@@ -36,6 +36,71 @@ const LaunchRequestHandler = {
 //             .getResponse();
 //     }
 // };
+
+const DatoCuriosoAudioIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'DatoCuriosoAudioIntent';
+    },
+    handle(handlerInput) {
+        const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
+        
+        const speakOutput = datosCuriosos[indiceAleatorio].dato;
+
+        return handlerInput.responseBuilder
+            .speak()
+            .addDirective({
+              "type": "Alexa.Presentation.APLA.RenderDocument",
+              "token": "developer-provided-string",
+              "document": {
+                "version": "0.91",
+                "type": "APLA",
+                "mainTemplate": {
+                    "parameters": [
+                        "payload"
+                    ],
+                    "item": {
+                        "type": "Mixer",
+                        "description": "This sample mixes text-to-speech (TTS) with a background audio clip. Filters are used to fade in the audio and lower the volume.",
+                        "items": [
+                            {
+                                "type": "Speech",
+                                "contentType": "SSML",
+                                "content": "<speak><amazon:effect name=\"whispered\">"+speakOutput+"</amazon:effect> <audio src=\"soundbank://soundlibrary/animals/amzn_sfx_cat_angry_screech_1x_01\" /></speak> "
+                            },
+                            // {
+                            //     "type": "Speech",
+                            //     "content": speakOutput
+                            // },
+                            {
+                                "type": "Audio",
+                                "source": "https://alexasource.s3.us-east-2.amazonaws.com/cinematic.mp3",
+                                "filters": [
+                                    {
+                                        "type": "Volume",
+                                        "amount": "20%"
+                                    },
+                                    {
+                                        "type": "FadeIn",
+                                        "duration": 1000
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+              },
+              "datasources": {
+                "user": {
+                  "name": "John"
+                }
+              }
+  
+            })
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
 
 const DatoCuriosoAleatorioIntentHandler = {
     canHandle(handlerInput) {
@@ -215,6 +280,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         DatoCuriosoAleatorioIntentHandler,
         DatoCuriosoIntentHandler,
         DatoSusurradoIntentHandler,
+        DatoCuriosoAudioIntentHandler,
         // HelloWorldIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
