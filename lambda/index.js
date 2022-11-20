@@ -6,12 +6,48 @@
 const Alexa = require('ask-sdk-core');
 const datosCuriosos = require('./facts')
 
+const DOCUMENT_ID = "GeneralView";
+
+const createDirectivePayload = (aplDocumentId, dataSources = {}, tokenId = "documentToken") => {
+    return {
+        type: "Alexa.Presentation.APL.RenderDocument",
+        token: tokenId,
+        document: {
+            type: "Link",
+            src: "doc://alexa/apl/documents/" + aplDocumentId
+        },
+        datasources: dataSources
+    }
+};
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
         const speakOutput = `Bienvenido, puedes decir, dame un dato curioso. <audio src="soundbank://soundlibrary/animals/amzn_sfx_cat_angry_screech_1x_01" />`;
+        
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": "Podreé decirte datos curiosos sobre naturazela y arte. ¡Comenzemos!",
+                        "textAlignment": "start",
+                        "titleText": "Bienvenido!"
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
         
         console.log("Se ejecutó la linea de bienvenida correctamente");
 
@@ -46,57 +82,32 @@ const DatoCuriosoAudioIntentHandler = {
         const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
         
         const speakOutput = datosCuriosos[indiceAleatorio].dato;
+        const tipo = datosCuriosos[indiceAleatorio].tipo;
+        
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": speakOutput,
+                        "textAlignment": "start",
+                        "titleText": tipo
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
 
         return handlerInput.responseBuilder
             .speak()
-            .addDirective({
-              "type": "Alexa.Presentation.APLA.RenderDocument",
-              "token": "developer-provided-string",
-              "document": {
-                "version": "0.91",
-                "type": "APLA",
-                "mainTemplate": {
-                    "parameters": [
-                        "payload"
-                    ],
-                    "item": {
-                        "type": "Mixer",
-                        "description": "This sample mixes text-to-speech (TTS) with a background audio clip. Filters are used to fade in the audio and lower the volume.",
-                        "items": [
-                            {
-                                "type": "Speech",
-                                "contentType": "SSML",
-                                "content": "<speak><amazon:effect name=\"whispered\">"+speakOutput+"</amazon:effect> <audio src=\"soundbank://soundlibrary/animals/amzn_sfx_cat_angry_screech_1x_01\" /></speak> "
-                            },
-                            // {
-                            //     "type": "Speech",
-                            //     "content": speakOutput
-                            // },
-                            {
-                                "type": "Audio",
-                                "source": "https://alexasource.s3.us-east-2.amazonaws.com/cinematic.mp3",
-                                "filters": [
-                                    {
-                                        "type": "Volume",
-                                        "amount": "20%"
-                                    },
-                                    {
-                                        "type": "FadeIn",
-                                        "duration": 1000
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }
-              },
-              "datasources": {
-                "user": {
-                  "name": "John"
-                }
-              }
-  
-            })
             .reprompt(speakOutput)
             .getResponse();
     }
@@ -111,8 +122,29 @@ const DatoCuriosoAleatorioIntentHandler = {
         const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
         
         const speakOutput = datosCuriosos[indiceAleatorio].dato;
+        const tipo = datosCuriosos[indiceAleatorio].tipo;
         
-        console.log("Se dio un dato curioso aleatorio correctamente");
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": speakOutput,
+                        "textAlignment": "start",
+                        "titleText": tipo
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -142,6 +174,30 @@ const DatoCuriosoIntentHandler = {
         
         const indiceAleatorio = Math.floor(Math.random() * seccion.length);
         speakOutput += seccion[indiceAleatorio].dato;
+        
+        const tipoFromData = datosCuriosos[indiceAleatorio].tipo;
+        
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": seccion[indiceAleatorio].dato,
+                        "textAlignment": "start",
+                        "titleText": tipoFromData
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -159,6 +215,30 @@ const DatoSusurradoIntentHandler = {
         const indiceAleatorio = Math.floor(Math.random() * datosCuriosos.length)
         
         const speakOutput = `<amazon:effect name="whispered">${datosCuriosos[indiceAleatorio].dato}</amazon:effect>`;
+        
+        const tipoFromData = datosCuriosos[indiceAleatorio].tipo;
+        
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte (susurrando)",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": datosCuriosos[indiceAleatorio].dato,
+                        "textAlignment": "start",
+                        "titleText": tipoFromData
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -190,6 +270,28 @@ const CancelAndStopIntentHandler = {
     },
     handle(handlerInput) {
         const speakOutput = 'Hasta luego, espero vuelvas pronto.';
+        
+        if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
+            const datasource = {
+                "simpleTextTemplateData": {
+                    "type": "object",
+                    "properties": {
+                        "backgroundImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/background-green.png",
+                        "foregroundImageLocation": "left",
+                        "foregroundImageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
+                        "headerTitle": "Datos curiosos",
+                        "headerSubtitle": "Skill que te dice datos curiosos de naturaleza y arte (susurrando)",
+                        "hintText": "Intenta decir, \"dime un dato curioso\"",
+                        "headerAttributionImage": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/logo-world-of-plants-2.png",
+                        "primaryText": "Espero que hayas aprendido nuevos datos curiosos. Regresa printo :D",
+                        "textAlignment": "start",
+                        "titleText": "Hasta pronto"
+                    }
+                }
+            };
+            const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
+            handlerInput.responseBuilder.addDirective(aplDirective);
+        }
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
